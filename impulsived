@@ -1,8 +1,37 @@
 #!/usr/bin/env python3
 
+import serial
 import configparser
 from influxdb import InfluxDBClient
 
+config = configparser.ConfigParser()
 config.read('config.conf')
-client = InfluxDBClient('localhost', 8086, 'root', 'root', 'example')
 
+influx_host = config.get("influx", "host")
+influx_port = config.get("influx", "host")
+influx_user = config.get("influx", "host")
+influx_pass = config.get("influx", "host")
+influx_db = config.get("influx", "host")
+
+port = config.get("impulse", "port")
+baud = config.get("impulse", "baud")
+
+client = InfluxDBClient(influx_host,
+                        influx_port,
+                        influx_user,
+                        influx_pass,
+                        influx_db)
+
+ser = serial.Serial(port, baud)
+
+counter1 = 0
+counter2 = 0
+
+while True:
+  line = ser.readline().decode('ascii')
+  if line == "PIN1 Triggered!\r\n":
+    counter1 = counter1 + 1
+    print("Counter 1: {}".format(counter1))
+  elif line == "PIN2 Triggered!\r\n":
+    counter2 = counter2 + 1
+    print("Counter 2: {}".format(counter2))
