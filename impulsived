@@ -46,7 +46,7 @@ def logToInflux(measurement, value):
     {
       "measurement": measurement,
       "fields": {
-        "Float_value": value,
+        "value": value,
       }
     }
   ]
