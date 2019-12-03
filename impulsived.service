@@ -1,0 +1,16 @@
+[Unit]
+Description=Impulsived - Serial Meters to Influx Adapter
+After=network.target
+Wants=network.target
+Requires=influxdb.service
+
+[Service]
+Type=simple
+User=impulsived
+WorkingDirectory=/opt/python-impulsive/
+ExecStart=/opt/python-impulsive/impulsived
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

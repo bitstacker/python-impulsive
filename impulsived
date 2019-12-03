@@ -34,9 +34,20 @@ client = InfluxDBClient(influx_host,
 ser = serial.Serial(port, baud)
 
 def quit_signal(signal, frame):
-    print('Shutting down.')
-    sys.exit(0)
+  print('Shutting down.')
+  sys.exit(0)
 signal.signal(signal.SIGINT, quit_signal)
+
+def logToInflux(measurement, value):
+  json_body = [
+    {
+      "measurement": measurement,
+      "fields": {
+        "Float_value": value,
+      }
+    }
+  ]
+  client.write_points(json_body)
 
 while True:
   line = ser.readline().decode('ascii')
@@ -44,7 +55,9 @@ while True:
     print("{}{} of {} consumed.".format(trigger1amount,
                                         trigger1unit,
                                         trigger1name))
+    logToInflux(trigger1name, float(trigger1amount))
   elif line == "PIN2 triggered!\r\n":
     print("{}{} of {} consumed.".format(trigger2amount,
                                         trigger2unit,
                                         trigger2name))
+    logToInflux(trigger2name, float(trigger2amount))
